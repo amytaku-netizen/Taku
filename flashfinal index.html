@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vocabuil 基礎英語長文_Taku</title>
+  <style>
+    :root {
+      --bg-dark: #060913;
+      --card-bg: rgba(15, 23, 42, 0.75);
+      --card-border: rgba(0, 242, 254, 0.2);
+      --accent-neon-blue: #00f2fe;
+      --accent-neon-purple: #9d4edd;
+      --accent-green: #00ff87;
+      --accent-red: #ff0055;
+      --text-main: #f8fafc;
+      --text-sub: #64748b;
+      --badge-a2: #38ef7d;
+      --badge-b1: #00f2fe;
+      --badge-b2: #ffb347;
+      --badge-c1: #ff416c;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    
+    body {
+      background: radial-gradient(circle at 50% 10%, #1e1b4b, #090d16 60%, #030712);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-image: 
+        linear-gradient(rgba(0, 242, 254, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 242, 254, 0.03) 1px, transparent 1px);
+      background-size: 30px 30px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    header, .card-container, .quiz-container, .nav-buttons, .action-buttons {
+      position: relative;
+      z-index: 1;
+    }
+
+    header {
+      width: 100%;
+      max-width: 480px;
+      margin-bottom: 6px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #ff0055, #ff4d6d, #ff758f);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+      line-height: 1.2;
+      text-shadow: 0 0 20px rgba(255, 0, 85, 0.5);
+    }
+
+    .title-taku {
+      font-size: 0.65em;
+      font-weight: 600;
+      opacity: 0.9;
+    }
+
+    .dashboard {
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 6px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.36);
+    }
+
+    .circle-chart { position: relative; width: 40px; height: 40px; }
+    .circle-chart svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+    .circle-bg { fill: none; stroke: rgba(255, 255, 255, 0.05); stroke-width: 4; }
+    .circle-progress { fill: none; stroke: url(#gradient); stroke-width: 4; stroke-linecap: round; stroke-dasharray: 0, 100; transition: stroke-dasharray 0.6s ease; }
+    .percentage { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 0.7rem; font-weight: 900; color: var(--accent-neon-blue); }
+    .dash-info { text-align: right; }
+    .dash-info div { font-size: 0.7rem; color: var(--text-sub); margin-bottom: 1px; }
+    .dash-info span { font-size: 0.9rem; font-weight: bold; color: var(--text-main); }
+
+    .view-switcher { width: 100%; max-width: 480px; display: flex; gap: 8px; margin-bottom: 6px; }
+    .tab-btn { flex: 1; padding: 6px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--card-border); border-radius: 8px; color: var(--text-sub); font-weight: 700; font-size: 0.78rem; cursor: pointer; transition: all 0.3s; }
+    .tab-btn.active { background: linear-gradient(135deg, var(--accent-neon-blue), var(--accent-neon-purple)); color: #fff; border-color: transparent; box-shadow: 0 0 15px rgba(0, 242, 254, 0.4); }
+
+    .controls { width: 100%; max-width: 480px; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px; }
+    select, button.icon-btn { background: rgba(15, 23, 42, 0.7); border: 1px solid var(--card-border); color: var(--text-main); padding: 6px 8px; border-radius: 8px; font-size: 0.75rem; outline: none; backdrop-filter: blur(10px); transition: all 0.3s ease; width: 100%; }
+    select { cursor: pointer; }
+    select option { background: #0f172a; color: white; }
+    button.icon-btn { cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; font-weight: bold; }
+    button.icon-btn:hover { border-color: var(--accent-neon-blue); box-shadow: 0 0 12px rgba(0, 242, 254, 0.3); }
+    
+    .toggle-btn {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 6px 8px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: all 0.3s;
+    }
+    .toggle-btn.active {
+      border-color: var(--accent-green);
+      color: var(--accent-green);
+      box-shadow: 0 0 10px rgba(0, 255, 135, 0.25);
+    }
+    .toggle-btn.off {
+      border-color: rgba(255,255,255,0.1);
+      color: var(--text-sub);
+      opacity: 0.6;
+    }
+
+    .autoplay-active { background: linear-gradient(135deg, #00f2fe, #9d4edd) !important; color: #fff !important; box-shadow: 0 0 15px rgba(0, 242, 254, 0.5) !important; border: none !important; }
+
+    .card-container { width: 100%; max-width: 480px; height: 260px; perspective: 1000px; cursor: pointer; margin-bottom: 6px; }
+    .card { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); border-radius: 20px; }
+    .card.flipped { transform: rotateY(180deg); }
+    .card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 20px; background: var(--card-bg); backdrop-filter: blur(20px); border: 1px solid var(--card-border); padding: 14px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 15px rgba(255, 255, 255, 0.03); }
+    .card-back { transform: rotateY(180deg); }
+
+    .badge { padding: 3px 10px; border-radius: 20px; font-size: 0.65rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+    .badge.A2\+ { background: var(--badge-a2); color: #000; }
+    .badge.B1 { background: var(--badge-b1); color: #000; }
+    .badge.B2 { background: var(--badge-b2); color: #000; }
+    .badge.C1 { background: var(--badge-c1); color: #fff; }
+
+    .en-word { 
+      font-size: 2.1rem;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      color: #fff; 
+      text-align: center; 
+      text-shadow: 0 0 20px rgba(0, 242, 254, 0.6); 
+      word-wrap: break-word;
+    }
+    .ja-word { 
+      font-size: 1.3rem; 
+      font-weight: 800; 
+      color: var(--accent-green); 
+      text-align: center; 
+      text-shadow: 0 0 15px rgba(0, 255, 135, 0.4);
+    }
+    
+    .word-hint {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.85rem;
+      color: var(--accent-neon-purple);
+      margin-top: 4px;
+      text-align: center;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    /* IPA (国際音声記号) 用フォント設定 */
+    .phonetic { 
+      font-family: "Gentium Plus", "Charis SIL", "Doulos SIL", "Lucida Sans Unicode", "DejaVu Sans", "Arial Unicode MS", "Courier New", monospace; 
+      font-size: 0.95rem; 
+      color: #a5b4fc; 
+      margin-top: 2px; 
+      text-align: center; 
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+    
+    .pos { font-size: 0.8rem; color: var(--accent-neon-blue); font-style: italic; margin-top: 2px; text-align: center; }
+
+    .example-box { background: rgba(0, 0, 0, 0.4); border-left: 3px solid var(--accent-neon-blue); padding: 8px 10px; border-radius: 6px; width: 100%; font-size: 0.75rem; line-height: 1.35; color: #cbd5e1; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+    .example-src { display: block; font-size: 0.65rem; color: var(--text-sub); margin-top: 2px; font-weight: 600; }
+    
+    .speaker-btn { background: rgba(0, 242, 254, 0.1); border: 1px solid var(--card-border); color: var(--accent-neon-blue); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+    .speaker-btn:hover { background: var(--accent-neon-blue); color: #000; box-shadow: 0 0 15px var(--accent-neon-blue); }
+
+    .quiz-container { width: 100%; max-width: 480px; background: var(--card-bg); backdrop-filter: blur(20px); border: 1px solid var(--card-border); border-radius: 20px; padding: 14px; display: none; flex-direction: column; align-items: center; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6); margin-bottom: 6px; height: 260px; justify-content: space-between; }
+    .quiz-question { margin-bottom: 10px; text-align: center; width: 100%; word-wrap: break-word; }
+    .en-word-quiz { font-size: 1.8rem; font-weight: 900; color: #fff; text-shadow: 0 0 15px rgba(0, 242, 254, 0.5); }
+    .ja-word-quiz { font-size: 1.3rem; font-weight: 800; color: var(--accent-green); text-shadow: 0 0 15px rgba(0, 255, 135, 0.4); }
+
+    .options-grid { width: 100%; display: grid; grid-template-columns: 1fr; gap: 6px; }
+    .option-btn { padding: 8px 12px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--card-border); border-radius: 10px; color: var(--text-main); font-size: 0.8rem; font-weight: 600; text-align: left; cursor: pointer; transition: all 0.2s; }
+    .option-btn:hover { background: rgba(0, 242, 254, 0.1); border-color: var(--accent-neon-blue); }
+    .option-btn.correct { background: rgba(0, 255, 135, 0.25) !important; border-color: var(--accent-green) !important; color: var(--accent-green) !important; box-shadow: 0 0 15px rgba(0, 255, 135, 0.4); }
+    .option-btn.wrong { background: rgba(255, 0, 85, 0.25) !important; border-color: var(--accent-red) !important; color: var(--accent-red) !important; }
+
+    .nav-buttons { width: 100%; max-width: 480px; display: flex; gap: 8px; margin-bottom: 6px; }
+    .nav-btn { flex: 1; padding: 6px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--card-border); border-radius: 8px; color: var(--text-main); font-weight: 700; font-size: 0.75rem; cursor: pointer; transition: all 0.2s; }
+    .nav-btn:hover { background: rgba(0, 242, 254, 0.15); border-color: var(--accent-neon-blue); }
+
+    .action-buttons { width: 100%; max-width: 480px; display: flex; gap: 10px; }
+    .action-btn { flex: 1; padding: 8px; border: none; border-radius: 10px; font-size: 0.8rem; font-weight: 800; cursor: pointer; color: #fff; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px; }
+    .btn-gotit { background: linear-gradient(135deg, #00ff87, #00f2fe); color: #000; box-shadow: 0 4px 15px rgba(0, 255, 135, 0.4); }
+    .action-btn:active { transform: scale(0.96); }
+    .hint { font-size: 0.65rem; color: var(--text-sub); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Vocabuil 基礎英語長文_<span class="title-taku">Taku</span></h1>
+    
+    <div class="dashboard">
+      <div class="circle-chart">
+        <svg viewBox="0 0 36 36">
+          <defs>
+            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#00f2fe" />
+              <stop offset="100%" stop-color="#00ff87" />
+            </linearGradient>
+          </defs>
+          <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+          <path class="circle-progress" id="circleProgress" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+        </svg>
+        <div class="percentage" id="percentText">0%</div>
+      </div>
+      <div class="dash-info">
+        <div>カード進捗</div>
+        <div><span id="currentCardNum">0</span> / <span id="totalCardNum">0</span></div>
+        <div style="margin-top:1px;">習得済み: <span id="masteredCount" style="color:var(--accent-green);">0</span> 語</div>
+      </div>
+    </div>
+
+    <div class="view-switcher">
+      <button class="tab-btn active" id="cardTab" onclick="switchView('card')">Flashcard</button>
+      <button class="tab-btn" id="quizTab" onclick="switchView('quiz')">4択 Quiz</button>
+    </div>
+
+    <div class="controls">
+      <select id="lessonFilter" onchange="filterCards()">
+        <option value="ALL">すべての長文 (1〜40)</option>
+        <option value="1-10">長文 1 〜 10</option>
+        <option value="11-20">長文 11 〜 20</option>
+        <option value="21-30">長文 21 〜 30</option>
+        <option value="31-40">長文 31 〜 40</option>
+      </select>
+
+      <select id="modeSelect" onchange="if(currentView==='card'){ updateCard(); } else { setupQuiz(); }">
+        <option value="EN_JA">英 ➔ 日 モード</option>
+        <option value="JA_EN">日 ➔ 英 モード</option>
+      </select>
+
+      <select id="levelFilter" onchange="filterCards()">
+        <option value="ALL">すべてのレベル (A2+〜C1)</option>
+        <option value="A2+">CEFR A2+</option>
+        <option value="B1">CEFR B1</option>
+        <option value="B2">CEFR B2</option>
+        <option value="C1">CEFR C1</option>
+      </select>
+
+      <select id="speedSelect" onchange="if(isAutoplay) startAutoplaySequence();">
+        <option value="1000">Pause: 1秒 (爆速)</option>
+        <option value="3000" selected>Pause: 3秒</option>
+        <option value="5000">Pause: 5秒</option>
+        <option value="7000">Pause: 7秒</option>
+      </select>
+
+      <select id="voiceSelect" style="grid-column: span 2;">
+        <option value="en-US">音声: アメリカ英語 (US)</option>
+        <option value="en-GB">音声: イギリス英語 (UK)</option>
+        <option value="en-AU">音声: オーストラリア英語 (AU)</option>
+      </select>
+
+      <button class="toggle-btn active" id="audioToggleBtn" onclick="toggleAudio()">読み上げ ON</button>
+      <button class="toggle-btn off" id="shuffleToggleBtn" onclick="toggleShuffle()">シャッフル OFF</button>
+
+      <button class="icon-btn" id="autoplayBtn" onclick="toggleAutoplay()" style="grid-column: span 2;">Auto Play</button>
+    </div>
+  </header>
+
+  <div class="card-container" id="cardView" onclick="manualFlipCard()">
+    <div class="card" id="card">
+      <div class="card-front">
+        <span class="badge" id="frontBadge">B1</span>
+        <div id="frontContent" style="width: 100%;">
+          <div class="en-word" id="frontTitle">Word</div>
+          <div class="word-hint" id="frontHint" style="display:none;">Hint: f _ _ _ _ (5 letters)</div>
+          <div class="phonetic" id="frontPhonetic">/wɜːd/</div>
+          <div class="pos" id="frontSub">品詞</div>
+        </div>
+        <button class="speaker-btn" onclick="speakSide(event, 'front')">音声</button>
+        <div class="hint">Tap or [Space] to flip</div>
+      </div>
+      <div class="card-back">
+        <span class="badge" id="backBadge">B1</span>
+        <div id="backContent" style="width:100%; display:flex; flex-direction:column; align-items:center;">
+          <div class="ja-word" id="backTitle" style="margin-bottom:2px;">日本語訳</div>
+          <div class="phonetic" id="backPhonetic" style="display:none; margin-bottom:4px;"></div>
+          <div class="example-box" style="margin-top:4px;">
+            <span id="backExample">例文がここに表示されます。</span>
+            <span class="example-src" id="backSrc">出典: 1</span>
+          </div>
+        </div>
+        <button class="speaker-btn" style="margin-top:4px;" onclick="speakSide(event, 'back')">音声</button>
+        <div class="hint">Tap or [Space] to flip</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-container" id="quizView">
+    <div style="width:100%; display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+      <span class="badge" id="quizBadge">B1</span>
+      <button class="speaker-btn" style="width:28px; height:28px; font-size:0.8rem;" onclick="speakSide(event, 'front')">音声</button>
+    </div>
+    <div class="quiz-question en-word-quiz" id="quizQuestion">Question</div>
+    <div class="options-grid" id="optionsGrid"></div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="prevCard()">&lt; 前へ</button>
+    <button class="nav-btn" onclick="nextCard()">次へ &gt;</button>
+  </div>
+
+  <div class="action-buttons" id="flashcardActions">
+    <button class="action-btn btn-gotit" onclick="markCard(true)">覚えた</button>
+  </div>
+
+  <script>
+    // IPA (International Phonetic Alphabet) 規格準拠データセット
+    const vocabulary = [
+      { id: 1, lesson: 1, word: "frequently", phonetic: "/ˈfriːkwəntli/", cefr: "A2+", pos: "副詞", meaning: "頻繁に、しばしば", src: "長文 1", example: "English newspapers in Japan frequently carry letters to the editor..." },
+      { id: 2, lesson: 1, word: "recount", phonetic: "/rɪˈkaʊnt/", cefr: "C1", pos: "動詞", meaning: "詳しく語る、話す", src: "長文 1", example: "...recounting how objects lost in trains and public places are returned by Japanese individuals." },
+      { id: 3, lesson: 1, word: "valuable", phonetic: "/ˈvæljuəbl/", cefr: "B1", pos: "形容詞", meaning: "貴重な、価値のある", src: "長文 1", example: "Once I left a valuable document in a taxi." },
+      { id: 4, lesson: 1, word: "promptly", phonetic: "/ˈprɒmptli/", cefr: "A2+", pos: "副詞", meaning: "即座に、迅速に", src: "長文 1", example: "It, too, was returned promptly, and nothing was missing." },
+      { id: 5, lesson: 1, word: "overlook", phonetic: "/ˌəʊvəˈlʊk/", cefr: "A2+", pos: "動詞", meaning: "見落とす、見逃す", src: "長文 1", example: "Such cases are not overlooked by grateful foreigners." },
+      { id: 6, lesson: 1, word: "grateful", phonetic: "/ˈɡreɪtfl/", cefr: "B1", pos: "形容詞", meaning: "感謝している", src: "長文 1", example: "Such cases are not overlooked by grateful foreigners." },
+      { id: 7, lesson: 1, word: "rack", phonetic: "/ræk/", cefr: "B1", pos: "名詞", meaning: "棚、網棚", src: "長文 1", example: "One would never think of putting one’s briefcase in the overhead rack in an American or European train." },
+      { id: 8, lesson: 1, word: "neglect", phonetic: "/nɪˈɡlekt/", cefr: "A2+", pos: "動詞", meaning: "怠る、放置する", src: "長文 1", example: "Japanese going abroad should be careful not to neglect their possessions for even a short while." },
+      { id: 9, lesson: 1, word: "possession", phonetic: "/pəˈzeʃn/", cefr: "A2+", pos: "名詞", meaning: "所有物、所持品", src: "長文 1", example: "...not to neglect their possessions for even a short while." },
+      { id: 10, lesson: 1, word: "inconvenience", phonetic: "/ˌɪnkənˈviːniəns/", cefr: "A2+", pos: "名詞", meaning: "不便、迷惑", src: "長文 1", example: "Several of my Japanese friends have had their valuables stolen abroad, to their great inconvenience." },
+      { id: 11, lesson: 1, word: "embassy", phonetic: "/ˈembəsi/", cefr: "A2+", pos: "名詞", meaning: "大使館", src: "長文 1", example: "Japanese embassies often handle such cases of theft." },
+      { id: 12, lesson: 1, word: "evade", phonetic: "/ɪˈveɪd/", cefr: "B2", pos: "動詞", meaning: "（税金などを）逃れる、回避する", src: "長文 1", example: "...giving the number of doctors, dentists, and landowners attempting to evade taxes." },
+      { id: 13, lesson: 2, word: "opportunity", phonetic: "/ˌɒpəˈtjuːnəti/", cefr: "B1", pos: "名詞", meaning: "機会、チャンス", src: "長文 2", example: "Reading is an endless opportunity, an ever-open door to ever-greater mental growth." },
+      { id: 14, lesson: 2, word: "surrender", phonetic: "/səˈrendə(r)/", cefr: "B2", pos: "動詞", meaning: "（〜に）屈する、身を任せる", src: "長文 2", example: "...or you must surrender yourself to self-chosen ignorance." },
+      { id: 15, lesson: 2, word: "ignorance", phonetic: "/ˈɪɡnərəns/", cefr: "B1", pos: "名詞", meaning: "無知", src: "長文 2", example: "...or you must surrender yourself to self-chosen ignorance." },
+      { id: 16, lesson: 2, word: "requirement", phonetic: "/rɪˈkwaɪəmənt/", cefr: "B1", pos: "名詞", meaning: "必要条件、必修", src: "長文 2", example: "...(unless reading it is a requirement to pass an examination, or something like that)." },
+      { id: 17, lesson: 2, word: "devote", phonetic: "/dɪˈvəʊt/", cefr: "B1", pos: "動詞", meaning: "（時間・労力を）捧げる、充てる", src: "長文 2", example: "...put it back on the shelf and devote your time instead to reading something else..." },
+      { id: 18, lesson: 2, word: "confess", phonetic: "/kənˈfes/", cefr: "B1", pos: "動詞", meaning: "認める、告白する", src: "長文 2", example: "...be fair with yourself and confess that perhaps the shortcoming is not in the book but in you." },
+      { id: 19, lesson: 2, word: "shortcoming", phonetic: "/ˈʃɔːtkʌmɪŋ/", cefr: "A2+", pos: "名詞", meaning: "欠点、短所", src: "長文 2", example: "...confess that perhaps the shortcoming is not in the book but in you." },
+      { id: 20, lesson: 2, word: "dull", phonetic: "/dʌl/", cefr: "B1", pos: "形容詞", meaning: "退屈な、冴えない", src: "長文 2", example: "Often a book which now seems dull or difficult will prove easy to grasp and fascinating to read..." },
+      { id: 21, lesson: 2, word: "grasp", phonetic: "/ɡrɑːsp/", cefr: "B1", pos: "動詞", meaning: "理解する、把握する", src: "長文 2", example: "...will prove easy to grasp and fascinating to read when you are more mature intellectually." },
+      { id: 22, lesson: 2, word: "fascinating", phonetic: "/ˈfæsɪneɪtɪŋ/", cefr: "B1", pos: "形容詞", meaning: "魅惑的な、非常に面白い", src: "長文 2", example: "...will prove easy to grasp and fascinating to read when you are more mature intellectually." },
+      { id: 23, lesson: 2, word: "mature", phonetic: "/məˈtʃʊə(r)/", cefr: "B1", pos: "形容詞", meaning: "成熟した、大人びた", src: "長文 2", example: "...when you are more mature intellectually." },
+      { id: 24, lesson: 2, word: "intellectually", phonetic: "/ˌɪntəˈlektʃuəli/", cefr: "B2", pos: "副詞", meaning: "知的に、知性において", src: "長文 2", example: "...when you are more mature intellectually." },
+      { id: 25, lesson: 2, word: "puzzled", phonetic: "/ˈpʌzld/", cefr: "A2+", pos: "形容詞", meaning: "困惑した、首をかしげる", src: "長文 2", example: "...young people, or those who read little, are puzzled or bored by certain great books..." },
+      { id: 26, lesson: 2, word: "maturity", phonetic: "/məˈtʃʊərəti/", cefr: "B1", pos: "名詞", meaning: "成熟、円熟", src: "長文 2", example: "...because they lack the background and the maturity of mind necessary to meet the author..." },
+      { id: 27, lesson: 3, word: "satisfaction", phonetic: "/ˌsætɪsˈfækʃn/", cefr: "B1", pos: "名詞", meaning: "満足、満足感", src: "長文 3", example: "“Good,” she said with satisfaction, getting up." },
+      { id: 28, lesson: 4, word: "patiently", phonetic: "/ˈpeɪʃntli/", cefr: "A2+", pos: "副詞", meaning: "忍耐強く、気長に", src: "長文 4", example: "Waiting patiently is hard to do, even for grown-ups." },
+      { id: 29, lesson: 4, word: "unacceptable", phonetic: "/ˌʌnəkˈseptəbl/", cefr: "B1", pos: "形容詞", meaning: "容認できない", src: "長文 4", example: "...because we know that it is socially unacceptable to do otherwise." },
+      { id: 30, lesson: 4, word: "comprehension", phonetic: "/ˌkɒmprɪˈhenʃn/", cefr: "B1", pos: "名詞", meaning: "理解力", src: "長文 4", example: "In addition, their limited comprehension of time makes it difficult for them to gauge..." },
+      { id: 31, lesson: 4, word: "gauge", phonetic: "/ɡeɪdʒ/", cefr: "B2", pos: "動詞", meaning: "測定する、推し量る", src: "長文 4", example: "...makes it difficult for them to gauge how long they will have to wait for something." },
+      { id: 32, lesson: 4, word: "reveal", phonetic: "/rɪˈviːl/", cefr: "B1", pos: "動詞", meaning: "明らかにする、示す", src: "長文 4", example: "These are questions that reveal how difficult it is for small children not only to wait..." },
+      { id: 33, lesson: 4, word: "framework", phonetic: "/ˈfreɪmwɜːk/", cefr: "B2", pos: "名詞", meaning: "枠組み、構造", src: "長文 4", example: "...to understand the general framework of time passing." },
+      { id: 34, lesson: 4, word: "abundance", phonetic: "/əˈbʌndəns/", cefr: "B2", pos: "名詞", meaning: "豊富、大量", src: "長文 4", example: "Everyday life provides an abundance of opportunities to teach our children how to wait patiently." },
+      { id: 35, lesson: 4, word: "anticipation", phonetic: "/ænˌtɪsɪˈpeɪʃn/", cefr: "B1", pos: "名詞", meaning: "期待、予期", src: "長文 4", example: "However, their anticipation of the event can be used to help them learn a great deal..." },
+      { id: 36, lesson: 4, word: "rudimentary", phonetic: "/ˌruːdɪˈmentri/", cefr: "C1", pos: "形容詞", meaning: "基本的な、初歩的な", src: "長文 4", example: "...and will give them a rudimentary awareness of the relative length of units of time." },
+      { id: 37, lesson: 4, word: "awareness", phonetic: "/əˈweənəs/", cefr: "B1", pos: "名詞", meaning: "意識、認識", src: "長文 4", example: "...and will give them a rudimentary awareness of the relative length of units of time." },
+      { id: 38, lesson: 4, word: "relative", phonetic: "/ˈrelətɪv/", cefr: "B1", pos: "形容詞", meaning: "相対的な", src: "長文 4", example: "...a rudimentary awareness of the relative length of units of time." },
+      { id: 39, lesson: 5, word: "menial", phonetic: "/ˈmiːniəl/", cefr: "B2", pos: "形容詞", meaning: "単調でつまらない、下働きの", src: "長文 5", example: "...and their work ranges all the way from menial tasks to the professions." },
+      { id: 40, lesson: 5, word: "supplement", phonetic: "/ˈsʌplɪment/", cefr: "B1", pos: "動詞", meaning: "補う、追加する", src: "長文 5", example: "...or of supplementing the family income after marriage so that she can buy things..." },
+      { id: 41, lesson: 5, word: "proportion", phonetic: "/prəˈpɔːʃn/", cefr: "B1", pos: "名詞", meaning: "割合、比率", src: "長文 5", example: "Since a large proportion of women in America now attend a college or university..." },
+      { id: 42, lesson: 5, word: "primary", phonetic: "/ˈpraɪməri/", cefr: "B1", pos: "形容詞", meaning: "主要な、第一の", src: "長文 5", example: "...most married women regard their homes and families as their primary concern." },
+      { id: 43, lesson: 6, word: "struggle", phonetic: "/ˈstrʌɡl/", cefr: "B1", pos: "動詞", meaning: "苦闘する、もがく", src: "長文 6", example: "If you go home each time you start to struggle you will never learn how to work through..." },
+      { id: 44, lesson: 6, word: "contribute", phonetic: "/kənˈtrɪbjuːt/", cefr: "B1", pos: "動詞", meaning: "貢献する、寄与する", src: "長文 6", example: "Joining a campus organization gives you a chance to meet new people and contribute to a cause." },
+      { id: 45, lesson: 6, word: "dissipate", phonetic: "/ˈdɪsɪpeɪt/", cefr: "C1", pos: "動詞", meaning: "散らす、消散する", src: "長文 6", example: "Physical exercise... can also cause stress to dissipate." },
+      { id: 46, lesson: 6, word: "rigor", phonetic: "/ˈrɪɡə(r)/", cefr: "B2", pos: "名詞", meaning: "厳しさ、過酷さ", src: "長文 6", example: "...which can help you manage the rigors of a college lifestyle." },
+      { id: 47, lesson: 6, word: "intramural", phonetic: "/ˌɪntrəˈmjʊərəl/", cefr: "B1", pos: "形容詞", meaning: "校内の、学内の", src: "長文 6", example: "You should also consider group exercise opportunities, such as intramural athletics..." },
+      { id: 48, lesson: 7, word: "simplistic", phonetic: "/sɪmˈplɪstɪk/", cefr: "B2", pos: "形容詞", meaning: "単純化しすぎた", src: "長文 7", example: "However, that advice is actually simplistic and misleading." },
+      { id: 49, lesson: 7, word: "misleading", phonetic: "/ˌmɪsˈliːdɪŋ/", cefr: "B2", pos: "形容詞", meaning: "誤解を招く", src: "長文 7", example: "However, that advice is actually simplistic and misleading." },
+      { id: 50, lesson: 7, word: "enthralled", phonetic: "/ɪnˈθrɔːld/", cefr: "B2", pos: "形容詞", meaning: "心を奪われた、夢中になった", src: "長文 7", example: "...say you love basketball but aren’t tall enough to compete, or you’re enthralled by jazz..." },
+      { id: 51, lesson: 7, word: "terrific", phonetic: "/təˈrɪfɪk/", cefr: "A2+", pos: "形容詞", meaning: "素晴らしい", src: "長文 7", example: "In both cases you can be a terrific fan, going to games and concerts..." },
+      { id: 52, lesson: 7, word: "crave", phonetic: "/kreɪv/", cefr: "B2", pos: "動詞", meaning: "切望する、無性に欲しがる", src: "長文 7", example: "...or crave surfing and can ride any wave." },
+      { id: 53, lesson: 7, word: "recipe", phonetic: "/ˈresəpi/", cefr: "B1", pos: "名詞", meaning: "手順、引き起こす原因", src: "長文 7", example: "Trying to craft a career around such passions is often a recipe for frustration." },
+      { id: 54, lesson: 7, word: "accomplished", phonetic: "/əˈkʌmplɪʃt/", cefr: "B1", pos: "形容詞", meaning: "熟練した、優秀な", src: "長文 7", example: "For example, if you are an accomplished accountant, there’s always a position..." },
+      { id: 55, lesson: 7, word: "overlap", phonetic: "/ˌəʊvəˈlæp/", cefr: "B2", pos: "動詞", meaning: "重なり合う", src: "長文 7", example: "The sweet spot is where your passions overlap with your skills and the market." },
+      { id: 56, lesson: 8, word: "statistical", phonetic: "/stəˈtɪstɪkl/", cefr: "B2", pos: "形容詞", meaning: "統計上の", src: "長文 8", example: "...they first conduct a statistical survey of the market." },
+      { id: 57, lesson: 8, word: "deliberately", phonetic: "/dɪˈlɪbərətli/", cefr: "B2", pos: "副詞", meaning: "故意に、計画的に", src: "長文 8", example: "In fact, random sampling is done quite deliberately." },
+      { id: 58, lesson: 8, word: "devastating", phonetic: "/ˈdevəsteɪtɪŋ/", cefr: "B2", pos: "形容詞", meaning: "壊滅的な、甚大な", src: "長文 8", example: "Such decisions can have devastating effects on the future of the company." },
+      { id: 59, lesson: 9, word: "earnestly", phonetic: "/ˈɜːnɪstli/", cefr: "B2", pos: "副詞", meaning: "切実に、心から", src: "長文 9", example: "I earnestly urge all young people contemplating their careers to keep in mind..." },
+      { id: 60, lesson: 9, word: "contemplate", phonetic: "/ˈkɒntəmpleɪt/", cefr: "B2", pos: "動詞", meaning: "熟考する、熟慮する", src: "長文 9", example: "I earnestly urge all young people contemplating their careers..." },
+      { id: 61, lesson: 9, word: "ultimate", phonetic: "/ˈʌltɪmət/", cefr: "B2", pos: "形容詞", meaning: "究極の、根本的な", src: "長文 9", example: "This is the ultimate test for lifelong pleasure in a career, of no matter what sort." },
+      { id: 62, lesson: 9, word: "lofty", phonetic: "/ˈlɒfti/", cefr: "B2", pos: "形容詞", meaning: "高尚な、崇高な", src: "長文 9", example: "...in whatever field it may be, lofty or humble..." },
+      { id: 63, lesson: 9, word: "humble", phonetic: "/ˈhʌmbl/", cefr: "B1", pos: "形容詞", meaning: "控えめな、謙遜な、卑しい", src: "長文 9", example: "...in whatever field it may be, lofty or humble..." },
+      { id: 64, lesson: 9, word: "gratifying", phonetic: "/ˈɡrætɪfaɪɪŋ/", cefr: "B2", pos: "形容詞", meaning: "満足を与える、喜ばしい", src: "長文 9", example: "The pot of gold that appears to be gleaming... is less gratifying than the rainbow itself." },
+      { id: 65, lesson: 9, word: "zest", phonetic: "/zest/", cefr: "C1", pos: "名詞", meaning: "情熱、強い興味", src: "長文 9", example: "...be able to approach each new morning with anticipation and zest for the job..." },
+      { id: 66, lesson: 10, word: "peep", phonetic: "/piːp/", cefr: "B1", pos: "動詞", meaning: "覗き見る", src: "長文 10", example: "...once or twice she had peeped into the book her sister was reading..." },
+      { id: 67, lesson: 10, word: "remarkable", phonetic: "/rɪˈmɑːkəbl/", cefr: "B1", pos: "形容詞", meaning: "注目すべき、驚くべき", src: "長文 10", example: "There was nothing so very remarkable in that..." },
+      { id: 68, lesson: 10, word: "occur", phonetic: "/əˈkɜː(r)/", cefr: "B1", pos: "動詞", meaning: "(考えなどが) 心に浮かんだ", src: "長文 10", example: "...it occurred to her that she ought to have wondered at this..." },
+      { id: 69, lesson: 11, word: "compartment", phonetic: "/kəmˈpɑːtmənt/", cefr: "B2", pos: "名詞", meaning: "（列車の）個室、区画", src: "長文 11", example: "...if by train, an empty compartment." },
+      { id: 70, lesson: 11, word: "restrained", phonetic: "/rɪˈstreɪnd/", cefr: "B1", pos: "形容詞", meaning: "控えめな、抑制された", src: "長文 11", example: "Similarly, conversation in Britain is in general much more quiet and restrained..." },
+      { id: 71, lesson: 11, word: "ill-bred", phonetic: "/ˌɪl ˈbred/", cefr: "C1", pos: "形容詞", meaning: "育ちが悪い、礼儀知らずの", src: "長文 11", example: "...and loud speech is considered ill-bred." },
+      { id: 72, lesson: 11, word: "reluctance", phonetic: "/rɪˈlʌktəns/", cefr: "B2", pos: "名詞", meaning: "気が進まないこと、躊躇", src: "長文 11", example: "This reluctance to communicate with others is an unfortunate quality in some ways..." },
+      { id: 73, lesson: 11, word: "hospitality", phonetic: "/ˌhɒspɪˈtæləti/", cefr: "B2", pos: "名詞", meaning: "もてなし、歓待", src: "長文 11", example: "...it is true that the English are not noted for their generosity and hospitality." },
+      { id: 74, lesson: 11, word: "conceited", phonetic: "/kənˈsiːtɪd/", cefr: "B2", pos: "形容詞", meaning: "うぬぼれた、自負心強い", src: "長文 11", example: "Within their hearts, the English are perhaps no less conceited than anybody else..." },
+      { id: 75, lesson: 12, word: "cramped", phonetic: "/kræmpt/", cefr: "A2+", pos: "形容詞", meaning: "窮屈な、狭苦しい", src: "長文 12", example: "It’s nice to enjoy the space of the countryside after my cramped apartment in the suburbs." },
+      { id: 76, lesson: 12, word: "supervisor", phonetic: "/ˈsuːpəvaɪzə(r)/", cefr: "B1", pos: "名詞", meaning: "監督者、上司", src: "長文 12", example: "He now works as a supervisor in a post office in eastern Paris." },
+      { id: 77, lesson: 12, word: "spacious", phonetic: "/ˈspeɪʃəs/", cefr: "B1", pos: "形容詞", meaning: "広々とした", src: "長文 12", example: "It was lovely to see Pierre again and spend time in the spacious apartment..." },
+      { id: 78, lesson: 13, word: "psychiatrist", phonetic: "/saɪˈkaɪətrɪst/", cefr: "B2", pos: "名詞", meaning: "精神科医", src: "長文 13", example: "In the early 1990s, psychiatrist Thomas Wehr conducted an experiment..." },
+      { id: 79, lesson: 13, word: "consecutive", phonetic: "/kənˈsekjətɪv/", cefr: "B2", pos: "形容詞", meaning: "連続した", src: "長文 13", example: "...the idea that we must sleep for eight consecutive hours persists." },
+      { id: 80, lesson: 13, word: "seminal", phonetic: "/ˈsemɪnl/", cefr: "C1", pos: "形容詞", meaning: "独創的な、影響力の大きい", src: "長文 13", example: "In 2001, historian Roger Ekirch of Virginia Tech published a seminal paper..." },
+      { id: 81, lesson: 13, word: "unearth", phonetic: "/ʌnˈɜːθ/", cefr: "C1", pos: "動詞", meaning: "発掘する、明るみに出す", src: "長文 13", example: "His book... unearths more than 500 references to a segmented sleeping pattern..." },
+      { id: 82, lesson: 13, word: "recede", phonetic: "/rɪˈsiːd/", cefr: "B1", pos: "動詞", meaning: "遠のく、薄れる", src: "長文 13", example: "By the 1920s the idea of a first and second sleep had receded entirely..." },
+      { id: 83, lesson: 13, word: "attribute", phonetic: "/əˈtrɪbjuːt/", cefr: "B2", pos: "動詞", meaning: "〜に帰する、原因とみなす", src: "長文 13", example: "He attributes the initial shift to improvements in street lighting..." },
+      { id: 84, lesson: 13, word: "dwindle", phonetic: "/ˈdwɪndl/", cefr: "B2", pos: "動詞", meaning: "だんだん減少する、衰える", src: "長文 13", example: "...and as that activity increased, the length of time people could dedicate to rest dwindled." },
+      { id: 85, lesson: 13, word: "ubiquity", phonetic: "/juːˈbɪkwəti/", cefr: "B2", pos: "名詞", meaning: "至る所にあること、普遍性", src: "長文 13", example: "...as well as the ubiquity of artificial light." },
+      { id: 86, lesson: 14, word: "speculate", phonetic: "/ˈspekjuleɪt/", cefr: "B2", pos: "動詞", meaning: "推測する、憶測する", src: "長文 14", example: "Scientists speculate that lightning started a fire by accident..." },
+      { id: 87, lesson: 14, word: "indigestible", phonetic: "/ˌɪndɪˈdʒestəbl/", cefr: "B2", pos: "形容詞", meaning: "消化しにくい、消化できない", src: "長文 14", example: "...which allowed humans to eat otherwise indigestible foods..." },
+      { id: 88, lesson: 14, word: "anthropologist", phonetic: "/ˌænθrəˈpɒlədʒɪst/", cefr: "B2", pos: "名詞", meaning: "人類学者", src: "長文 14", example: "...although anthropologists are still arguing about this." },
+      { id: 89, lesson: 14, word: "constricted", phonetic: "/kənˈstrɪktɪd/", cefr: "C1", pos: "形容詞", meaning: "制限された、制約された", src: "長文 14", example: "...and diners willing to experiment, which means they are not constricted by tradition." },
+      { id: 90, lesson: 15, word: "sanitation", phonetic: "/ˌsænɪˈteɪʃn/", cefr: "B2", pos: "名詞", meaning: "衛生（設備）", src: "長文 15", example: "...and the right to adequate means of sanitation to prevent diseases..." },
+      { id: 91, lesson: 15, word: "irreversible", phonetic: "/ˌɪrɪˈvɜːsəbl/", cefr: "B2", pos: "形容詞", meaning: "取り返しのつかない、不可逆の", src: "長文 15", example: "Dehydration... can cause irreversible harm to their physical and mental development." },
+      { id: 92, lesson: 15, word: "impede", phonetic: "/ɪmˈpiːd/", cefr: "B2", pos: "動詞", meaning: "妨げる、邪魔する", src: "長文 15", example: "A child’s learning can be significantly impeded if the school they attend..." },
+      { id: 93, lesson: 16, word: "deaf", phonetic: "/def/", cefr: "A2+", pos: "形容詞", meaning: "耳が聞こえない", src: "長文 16", example: "...his hearing was bad and he gradually became deafer as he got older." },
+      { id: 94, lesson: 17, word: "hinder", phonetic: "/ˈhɪndə(r)/", cefr: "B2", pos: "動詞", meaning: "妨げる、邪魔する", src: "長文 17", example: "A man can never be hindered from thinking whatever he chooses..." },
+      { id: 95, lesson: 17, word: "conceal", phonetic: "/kənˈsiːl/", cefr: "B2", pos: "動詞", meaning: "隠す、秘密にする", src: "長文 17", example: "...so long as he conceals what he thinks." },
+      { id: 96, lesson: 17, word: "attainment", phonetic: "/əˈteɪnmənt/", cefr: "B2", pos: "名詞", meaning: "達成、到達", src: "長文 17", example: "...and the way to its attainment has lain through lakes of blood." },
+      { id: 97, lesson: 17, word: "enlightened", phonetic: "/ɪnˈlaɪtnd/", cefr: "B2", pos: "形容詞", meaning: "開明的な、教養のある", src: "長文 17", example: "It has taken centuries to persuade the most enlightened peoples..." },
+      { id: 98, lesson: 18, word: "attain", phonetic: "/əˈteɪn/", cefr: "B2", pos: "動詞", meaning: "達する、獲得する", src: "長文 18", example: "This reputation rests partly on the high... scores Japanese schoolchildren attain..." },
+      { id: 99, lesson: 18, word: "deficient", phonetic: "/dɪˈfɪʃnt/", cefr: "B2", pos: "形容詞", meaning: "欠陥のある、不足した", src: "長文 18", example: "...they would reveal where the Japanese education system is deficient." },
+      { id: 100, lesson: 18, word: "hostile", phonetic: "/ˈhɒstaɪl/", cefr: "B2", pos: "形容詞", meaning: "敵意のある、反対の", src: "長文 18", example: "...the Japanese education system, on the whole, is hostile to such a purpose." },
+      { id: 101, lesson: 18, word: "spontaneous", phonetic: "/spɒnˈteɪniəs/", cefr: "B2", pos: "形容詞", meaning: "自発的な、自然発生的な", src: "長文 18", example: "Spontaneous reasoning, along with spontaneous behaviour, is systematically suppressed..." },
+      { id: 102, lesson: 18, word: "suppress", phonetic: "/səˈpres/", cefr: "B2", pos: "動詞", meaning: "抑圧する、抑制する", src: "長文 18", example: "...is systematically suppressed in practically all schools..." },
+      { id: 103, lesson: 21, word: "inquisitiveness", phonetic: "/ɪnˈkwɪzətɪvnəs/", cefr: "B1", pos: "名詞", meaning: "好奇心、探究心", src: "長文 21", example: "...it is important for you to bring an element of inquisitiveness to the classroom." },
+      { id: 104, lesson: 22, word: "inherent", phonetic: "/ɪnˈhɪərənt/", cefr: "B2", pos: "形容詞", meaning: "固有の、本来備わっている", src: "長文 22", example: "Many people have an inherent fear of accepting responsibility..." },
+      { id: 105, lesson: 22, word: "akin", phonetic: "/əˈkɪn/", cefr: "A2+", pos: "形容詞", meaning: "（〜に）似て、同種の", src: "長文 22", example: "...much akin to the fear of failure." },
+      { id: 106, lesson: 22, word: "indomitable", phonetic: "/ɪnˈdɒmɪtəbl/", cefr: "B2", pos: "形容詞", meaning: "不屈の、屈しない", src: "長文 22", example: "...and strong, indomitable spirits ever willing to try." },
+      { id: 107, lesson: 23, word: "amnesia", phonetic: "/æmˈniːziə/", cefr: "C1", pos: "名詞", meaning: "記憶喪失", src: "長文 23", example: "What if the new taxes are accompanied by induced amnesia for the previous prices..." },
+      { id: 108, lesson: 23, word: "flabbergasted", phonetic: "/ˈflæbəɡɑːstɪd/", cefr: "C1", pos: "形容詞", meaning: "度肝を抜かれた、面食らった", src: "長文 23", example: "...would be flabbergasted by the new prices, and so might pull back on their gasoline..." },
+      { id: 109, lesson: 24, word: "irksome", phonetic: "/ˈɜːksəm/", cefr: "C1", pos: "形容詞", meaning: "うんざりする、退屈な", src: "長文 24", example: "There is certainly much work which is exceedingly irksome..." },
+      { id: 110, lesson: 24, word: "drudgery", phonetic: "/ˈdrʌdʒəri/", cefr: "A2+", pos: "名詞", meaning: "単調で辛い仕事", src: "長文 24", example: "Most of the idle rich suffer unspeakable boredom as the price of their freedom from drudgery." },
+      { id: 111, lesson: 25, word: "hassle", phonetic: "/ˈhæsl/", cefr: "B2", pos: "名詞", meaning: "面倒なこと、わずらわしさ", src: "長文 25", example: "Life becomes simpler, and many daily hassles vanish." },
+      { id: 112, lesson: 25, word: "overtaxed", phonetic: "/ˌəʊvəˈtækst/", cefr: "B2", pos: "形容詞", meaning: "酷使された、負荷がかかりすぎた", src: "長文 25", example: "Also, when we’re worried or overtaxed, a habit comforts us." },
+      { id: 113, lesson: 25, word: "numb", phonetic: "/nʌm/", cefr: "B2", pos: "形容詞", meaning: "麻痺した、無感覚な", src: "長文 25", example: "Habit makes it dangerously easy to become numb to our own existence." },
+      { id: 114, lesson: 27, word: "solitude", phonetic: "/ˈsɒlətjuːd/", cefr: "B2", pos: "名詞", meaning: "孤独（前向きな一人暮らし・一人の時間）", src: "長文 27", example: "How can the capacity for solitude be cultivated?" },
+      { id: 115, lesson: 27, word: "reverie", phonetic: "/ˈrevəri/", cefr: "C1", pos: "名詞", meaning: "幻想、白昼夢", src: "長文 27", example: "...allowing the girl’s reverie with her bath toys as she makes up stories..." },
+      { id: 116, lesson: 27, word: "impoverishment", phonetic: "/ɪmˈpɒvərɪʃmənt/", cefr: "C1", pos: "名詞", meaning: "窮困、貧困化、低下", src: "長文 27", example: "This reflects the impoverishment of our experience." },
+      { id: 117, lesson: 28, word: "stereotype", phonetic: "/ˈsteriətaɪp/", cefr: "B2", pos: "名詞 / 動詞", meaning: "固定観念 / 固定観念で見なす", src: "長文 28", example: "“Speaking of cultural differences leads us to stereotype..." },
+      { id: 118, lesson: 29, word: "intrinsic", phonetic: "/ɪnˈtrɪnzɪk/", cefr: "B2", pos: "形容詞", meaning: "内在的な、本質的な", src: "長文 29", example: "Some are intrinsic to the story itself: language artfully used..." },
+      { id: 119, lesson: 29, word: "craftsmanship", phonetic: "/ˈkrɑːftsmənʃɪp/", cefr: "B2", pos: "名詞", meaning: "職人技、巧みな技術", src: "長文 29", example: "Intrinsic factors come from the writer’s craftsmanship and art." },
+      { id: 120, lesson: 30, word: "consternation", phonetic: "/ˌkɒnstəˈneɪʃn/", cefr: "C1", pos: "名詞", meaning: "仰天、ひどい狼狽", src: "長文 30", example: "To his great consternation, he awoke to find an enormous snake staring at him..." },
+      { id: 121, lesson: 30, word: "pernicious", phonetic: "/pəˈnɪʃəs/", cefr: "C1", pos: "形容詞", meaning: "有害な、致命的な", src: "長文 30", example: "One bite from such a serpent would prove not only painful but positively pernicious." },
+      { id: 122, lesson: 30, word: "slither", phonetic: "/ˈslɪðə(r)/", cefr: "C1", pos: "動詞", meaning: "（蛇が）ずるずる滑る、はう", src: "長文 30", example: "Slowly the snake slithered forward toward him." },
+      { id: 123, lesson: 30, word: "recoil", phonetic: "/rɪˈkɔɪl/", cefr: "C1", pos: "動詞", meaning: "（恐怖・驚きで）引き下がる", src: "長文 30", example: "His left leg recoiled instinctively as the viper’s tongue flicked out..." },
+      { id: 124, lesson: 30, word: "sustenance", phonetic: "/ˈsʌstənəns/", cefr: "B2", pos: "名詞", meaning: "食料、生活の糧", src: "長文 30", example: "...not recognizing him as a potential source of sustenance..." },
+      { id: 125, lesson: 30, word: "cascade", phonetic: "/kæsˈkeɪd/", cefr: "C1", pos: "動詞", meaning: "滝のように流れ落ちる", src: "長文 30", example: "The sweat was now cascading down his forehead..." },
+      { id: 126, lesson: 30, word: "surreptitiously", phonetic: "/ˌsʌrəpˈtɪʃəsli/", cefr: "C1", pos: "副詞", meaning: "秘密裏に、こっそりと", src: "長文 30", example: "...as he reached surreptitiously for his trusty weapon." },
+      { id: 127, lesson: 31, word: "uninhibited", phonetic: "/ˌʌnɪnˈhɪbɪtɪd/", cefr: "B2", pos: "形容詞", meaning: "抑圧のない、自由奔放な", src: "長文 31", example: "...traditional cultural rules dictate that women should not exhibit a wide, uninhibited smile." },
+      { id: 128, lesson: 31, word: "disconcerting", phonetic: "/ˌdɪskənˈsɜːtɪŋ/", cefr: "C1", pos: "形容詞", meaning: "惑わせる、不安にさせる", src: "長文 31", example: "...and they find it quite disconcerting to speak to someone who is wearing dark sunglasses." },
+      { id: 129, lesson: 33, word: "vacillation", phonetic: "/ˌvæsəˈleɪʃn/", cefr: "C1", pos: "名詞", meaning: "揺らぎ、優柔不断", src: "長文 33", example: "...hence a good deal of vacillation here and there." },
+      { id: 130, lesson: 34, word: "apathetic", phonetic: "/ˌæpəˈθetɪk/", cefr: "B2", pos: "形容詞", meaning: "無関心な、冷淡な", src: "長文 34", example: "Peace of mind or a calm state of mind shouldn't confuse that with a totally apathetic state of mind." },
+      { id: 131, lesson: 36, word: "phenomenon", phonetic: "/fəˈnɒmɪnən/", cefr: "B2", pos: "名詞", meaning: "現象", src: "長文 36", example: "An exploding lake is a strange phenomenon." },
+      { id: 132, lesson: 38, word: "bemoan", phonetic: "/bɪˈməʊn/", cefr: "C1", pos: "動詞", meaning: "嘆き悲しむ、不満を言う", src: "長文 38", example: "The Japanese are loud in bemoaning their lack of proficiency in the English tongue." },
+      { id: 133, lesson: 39, word: "innate", phonetic: "/ɪˈneɪt/", cefr: "B1", pos: "形容詞", meaning: "生まれつきの、天性の", src: "長文 39", example: "The ability to imitate must be innate." },
+      { id: 134, lesson: 40, word: "bequeath", phonetic: "/bɪˈkwiːð/", cefr: "C1", pos: "動詞", meaning: "遺贈する、後世に残す", src: "長文 40", example: "...as she spoke openly about what she was going to bequeath to everyone." },
+      { id: 135, lesson: 40, word: "deteriorate", phonetic: "/dɪˈtɪəriəreɪt/", cefr: "B1", pos: "動詞", meaning: "悪化する", src: "長文 40", example: "Her health was noticeably deteriorating, but she still had her wits about her." }
+    ];
+
+    let filteredList = [...vocabulary];
+    let currentIndex = 0;
+    let isFlipped = false;
+    let isAutoplay = false;
+    let isAudioEnabled = true;
+    let isShuffleEnabled = false;
+    let autoplayTimeoutId = null;
+    let currentView = 'card';
+    let availableVoices = [];
+    let masteredIds = JSON.parse(localStorage.getItem("cefr_mastered_cyber_taku") || "[]");
+
+    function initVoices() {
+      if (typeof speechSynthesis === 'undefined') return;
+      availableVoices = speechSynthesis.getVoices();
+    }
+
+    if (typeof speechSynthesis !== 'undefined') {
+      speechSynthesis.onvoiceschanged = initVoices;
+      setTimeout(initVoices, 300);
+    }
+
+    function toggleAudio() {
+      isAudioEnabled = !isAudioEnabled;
+      const btn = document.getElementById("audioToggleBtn");
+      if (isAudioEnabled) {
+        btn.innerText = "読み上げ ON";
+        btn.classList.add("active");
+        btn.classList.remove("off");
+      } else {
+        btn.innerText = "読み上げ OFF";
+        btn.classList.remove("active");
+        btn.classList.add("off");
+        window.speechSynthesis.cancel();
+      }
+    }
+
+    function toggleShuffle() {
+      isShuffleEnabled = !isShuffleEnabled;
+      const btn = document.getElementById("shuffleToggleBtn");
+      if (isShuffleEnabled) {
+        btn.innerText = "シャッフル ON";
+        btn.classList.add("active");
+        btn.classList.remove("off");
+      } else {
+        btn.innerText = "シャッフル OFF";
+        btn.classList.remove("active");
+        btn.classList.add("off");
+      }
+      filterCards();
+    }
+
+    function saveState() {
+      localStorage.setItem("cefr_mastered_cyber_taku", JSON.stringify(masteredIds));
+    }
+
+    function switchView(view) {
+      currentView = view;
+      document.getElementById("cardTab").classList.toggle("active", view === 'card');
+      document.getElementById("quizTab").classList.toggle("active", view === 'quiz');
+
+      if (view === 'card') {
+        document.getElementById("cardView").style.display = 'block';
+        document.getElementById("quizView").style.display = 'none';
+        document.getElementById("flashcardActions").style.display = 'flex';
+        updateCard();
+      } else {
+        document.getElementById("cardView").style.display = 'none';
+        document.getElementById("quizView").style.display = 'flex';
+        document.getElementById("flashcardActions").style.display = 'none';
+        setupQuiz();
+      }
+    }
+
+    function updateCard() {
+      if (filteredList.length === 0) {
+        document.getElementById("frontTitle").innerText = "該当なし";
+        document.getElementById("frontHint").style.display = "none";
+        document.getElementById("frontPhonetic").innerText = "";
+        document.getElementById("frontSub").innerText = "";
+        document.getElementById("frontBadge").style.display = "none";
+        document.getElementById("backTitle").innerText = "条件に合うカードがありません";
+        document.getElementById("backPhonetic").style.display = "none";
+        document.getElementById("backExample").innerText = "";
+        document.getElementById("backSrc").innerText = "";
+        document.getElementById("backBadge").style.display = "none";
+        document.getElementById("currentCardNum").innerText = "0";
+        document.getElementById("totalCardNum").innerText = "0";
+        return;
+      }
+
+      document.getElementById("frontBadge").style.display = "inline-block";
+      document.getElementById("backBadge").style.display = "inline-block";
+
+      const item = filteredList[currentIndex];
+      const mode = document.getElementById("modeSelect").value;
+      const frontTitleEl = document.getElementById("frontTitle");
+      const backTitleEl = document.getElementById("backTitle");
+      const hintEl = document.getElementById("frontHint");
+
+      if (mode === "EN_JA") {
+        frontTitleEl.className = "en-word";
+        frontTitleEl.innerText = item.word;
+        hintEl.style.display = "none";
+        
+        document.getElementById("frontPhonetic").innerText = item.phonetic;
+        document.getElementById("frontPhonetic").style.display = "block";
+        document.getElementById("frontSub").innerText = item.pos;
+        
+        backTitleEl.className = "ja-word";
+        backTitleEl.innerText = item.meaning;
+        
+        document.getElementById("backPhonetic").style.display = "none";
+        document.getElementById("backExample").innerText = `"${item.example}"`;
+      } else {
+        frontTitleEl.className = "ja-word";
+        frontTitleEl.innerText = item.meaning;
+        
+        let w = item.word;
+        let firstChar = w.charAt(0);
+        let restChars = w.slice(1).replace(/[a-zA-Z]/g, " _");
+        let letterCount = w.replace(/[^a-zA-Z]/g, '').length;
+        
+        hintEl.innerText = `Hint: ${firstChar}${restChars} (${letterCount} letters)`;
+        hintEl.style.display = "block";
+        
+        document.getElementById("frontPhonetic").style.display = "none";
+        document.getElementById("frontSub").innerText = item.pos;
+        
+        backTitleEl.className = "en-word";
+        backTitleEl.innerText = item.word;
+        
+        document.getElementById("backPhonetic").innerText = item.phonetic;
+        document.getElementById("backPhonetic").style.display = "block";
+        document.getElementById("backExample").innerText = `"${item.example}"`;
+      }
+
+      document.getElementById("frontBadge").innerText = item.cefr;
+      document.getElementById("frontBadge").className = `badge ${item.cefr}`;
+      document.getElementById("backSrc").innerText = `出典: ${item.src}`;
+      document.getElementById("backBadge").innerText = item.cefr;
+      document.getElementById("backBadge").className = `badge ${item.cefr}`;
+
+      const cardEl = document.getElementById("card");
+      cardEl.classList.remove("flipped");
+      isFlipped = false;
+
+      updateDashboardUI();
+    }
+
+    function updateDashboardUI() {
+      document.getElementById("currentCardNum").innerText = filteredList.length > 0 ? currentIndex + 1 : 0;
+      document.getElementById("totalCardNum").innerText = filteredList.length;
+      document.getElementById("masteredCount").innerText = masteredIds.length;
+
+      const percent = Math.round((masteredIds.length / vocabulary.length) * 100);
+      document.getElementById("percentText").innerText = `${percent}%`;
+      const circleProgress = document.getElementById("circleProgress");
+      circleProgress.style.strokeDasharray = `${percent}, 100`;
+    }
+
+    function setupQuiz() {
+      if (filteredList.length === 0) {
+        document.getElementById("quizQuestion").innerText = "問題がありません";
+        document.getElementById("optionsGrid").innerHTML = "";
+        return;
+      }
+
+      const currentItem = filteredList[currentIndex];
+      const mode = document.getElementById("modeSelect").value;
+      const quizQuestionEl = document.getElementById("quizQuestion");
+
+      document.getElementById("quizBadge").innerText = currentItem.cefr;
+      document.getElementById("quizBadge").className = `badge ${currentItem.cefr}`;
+      
+      if (mode === "EN_JA") {
+        quizQuestionEl.className = "quiz-question en-word-quiz";
+        quizQuestionEl.innerText = currentItem.word;
+      } else {
+        quizQuestionEl.className = "quiz-question ja-word-quiz";
+        quizQuestionEl.innerText = currentItem.meaning;
+      }
+
+      let options = [currentItem];
+      let pool = vocabulary.filter(v => v.id !== currentItem.id);
+      
+      pool.sort(() => 0.5 - Math.random());
+      options.push(...pool.slice(0, 3));
+      options.sort(() => 0.5 - Math.random());
+
+      const grid = document.getElementById("optionsGrid");
+      grid.innerHTML = "";
+
+      options.forEach(opt => {
+        const btn = document.createElement("button");
+        btn.className = "option-btn";
+        btn.innerText = mode === "EN_JA" ? opt.meaning : opt.word;
+        btn.onclick = () => checkAnswer(btn, opt.id === currentItem.id);
+        grid.appendChild(btn);
+      });
+
+      updateDashboardUI();
+
+      if (isAudioEnabled) {
+        speakSide(null, 'front');
+      }
+    }
+
+    function checkAnswer(selectedBtn, isCorrect) {
+      const allBtns = document.querySelectorAll(".option-btn");
+      allBtns.forEach(b => b.disabled = true);
+
+      let waitTime = 1200; // 正解時の移動待ち時間 (1.2秒)
+
+      if (isCorrect) {
+        selectedBtn.classList.add("correct");
+        markCard(true, true);
+      } else {
+        selectedBtn.classList.add("wrong");
+        const currentItem = filteredList[currentIndex];
+        const mode = document.getElementById("modeSelect").value;
+        const targetText = mode === "EN_JA" ? currentItem.meaning : currentItem.word;
+        allBtns.forEach(b => {
+          if (b.innerText === targetText) b.classList.add("correct");
+        });
+        waitTime = 3000; // 不正解時は正解確認・思考時間として3秒確保
+      }
+
+      setTimeout(() => {
+        if (filteredList.length === 0) return;
+        currentIndex = (currentIndex + 1) % filteredList.length;
+        if (currentView === 'quiz') {
+          setupQuiz();
+        } else {
+          updateCard();
+        }
+      }, waitTime);
+    }
+
+    function flipCardAnimation() {
+      if (filteredList.length === 0) return;
+      const cardEl = document.getElementById("card");
+      isFlipped = !isFlipped;
+      cardEl.classList.toggle("flipped", isFlipped);
+    }
+
+    function manualFlipCard() {
+      if (isAutoplay) stopAutoplay();
+      flipCardAnimation();
+      if (isAudioEnabled) {
+        setTimeout(() => {
+          speakSide(null, isFlipped ? 'back' : 'front');
+        }, 400);
+      }
+    }
+
+    function nextCard() {
+      if (filteredList.length === 0) return;
+      if (isAutoplay) stopAutoplay();
+      currentIndex = (currentIndex + 1) % filteredList.length;
+      if (currentView === 'quiz') {
+        setupQuiz();
+      } else {
+        updateCard();
+        if (isAudioEnabled) speakSide(null, 'front');
+      }
+    }
+
+    function prevCard() {
+      if (filteredList.length === 0) return;
+      if (isAutoplay) stopAutoplay();
+      currentIndex = (currentIndex - 1 + filteredList.length) % filteredList.length;
+      if (currentView === 'quiz') {
+        setupQuiz();
+      } else {
+        updateCard();
+        if (isAudioEnabled) speakSide(null, 'front');
+      }
+    }
+
+    function markCard(mastered, skipNav = false) {
+      if (filteredList.length === 0) return;
+      const item = filteredList[currentIndex];
+
+      if (mastered) {
+        if (!masteredIds.includes(item.id)) masteredIds.push(item.id);
+      } else {
+        masteredIds = masteredIds.filter(id => id !== item.id);
+      }
+      saveState();
+      
+      if (!skipNav) {
+        nextCard();
+      }
+    }
+
+    function filterCards() {
+      const selectedLesson = document.getElementById("lessonFilter").value;
+      const selectedLevel = document.getElementById("levelFilter").value;
+
+      filteredList = vocabulary.filter(item => {
+        let lessonMatch = false;
+        if (selectedLesson === "ALL") {
+          lessonMatch = true;
+        } else if (selectedLesson.includes("-")) {
+          const [start, end] = selectedLesson.split("-").map(Number);
+          lessonMatch = item.lesson >= start && item.lesson <= end;
+        } else {
+          lessonMatch = item.lesson === Number(selectedLesson);
+        }
+
+        const levelMatch = selectedLevel === "ALL" || item.cefr === selectedLevel;
+        return lessonMatch && levelMatch;
+      });
+
+      if (isShuffleEnabled) {
+        for (let i = filteredList.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [filteredList[i], filteredList[j]] = [filteredList[j], filteredList[i]];
+        }
+      }
+
+      currentIndex = 0;
+      if (currentView === 'quiz') {
+        setupQuiz();
+      } else {
+        updateCard();
+      }
+    }
+
+    function speakSide(event, side, onEndCallback) {
+      if (event) event.stopPropagation();
+      
+      if (!isAudioEnabled || filteredList.length === 0) {
+        if (onEndCallback) onEndCallback();
+        return;
+      }
+
+      window.speechSynthesis.cancel();
+
+      const item = filteredList[currentIndex];
+      const mode = document.getElementById("modeSelect").value;
+      const targetLang = document.getElementById("voiceSelect").value;
+
+      let textToSpeak = "";
+      let langToUse = "ja-JP";
+
+      if (side === 'front') {
+        if (mode === 'EN_JA') {
+          textToSpeak = item.word;
+          langToUse = targetLang;
+        } else {
+          textToSpeak = item.meaning;
+          langToUse = "ja-JP";
+        }
+      } else {
+        if (mode === 'EN_JA') {
+          textToSpeak = item.meaning;
+          langToUse = "ja-JP";
+        } else {
+          textToSpeak = item.word;
+          langToUse = targetLang;
+        }
+      }
+
+      const utterance = new SpeechSynthesisUtterance(textToSpeak);
+      utterance.lang = langToUse;
+
+      if (langToUse !== "ja-JP") {
+        const matchedVoice = availableVoices.find(v => v.lang === langToUse || v.lang.replace('_', '-').startsWith(langToUse));
+        if (matchedVoice) utterance.voice = matchedVoice;
+      }
+
+      if (onEndCallback) {
+        utterance.onend = () => { onEndCallback(); };
+        utterance.onerror = () => { onEndCallback(); };
+      }
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function runAutoplayStep() {
+      if (!isAutoplay || currentView !== 'card') return;
+
+      const pauseTime = Number(document.getElementById("speedSelect").value) || 3000;
+      const item = filteredList[currentIndex];
+
+      if (isFlipped) {
+        flipCardAnimation();
+      }
+
+      speakSide(null, 'front', () => {
+        if (!isAutoplay) return;
+
+        autoplayTimeoutId = setTimeout(() => {
+          if (!isAutoplay) return;
+
+          flipCardAnimation();
+
+          autoplayTimeoutId = setTimeout(() => {
+            if (!isAutoplay) return;
+
+            speakSide(null, 'back', () => {
+              if (!isAutoplay) return;
+
+              let exampleLength = item.example ? item.example.length : 0;
+              let readingTime = Math.max(3000, Math.min(7000, exampleLength * 65));
+
+              autoplayTimeoutId = setTimeout(() => {
+                if (!isAutoplay) return;
+                currentIndex = (currentIndex + 1) % filteredList.length;
+                updateCard();
+                runAutoplayStep();
+              }, readingTime);
+            });
+
+          }, 400);
+
+        }, pauseTime);
+      });
+    }
+
+    function startAutoplaySequence() {
+      clearTimeout(autoplayTimeoutId);
+      window.speechSynthesis.cancel();
+      runAutoplayStep();
+    }
+
+    function stopAutoplay() {
+      isAutoplay = false;
+      const btn = document.getElementById("autoplayBtn");
+      btn.classList.remove("autoplay-active");
+      btn.innerText = "Auto Play";
+      clearTimeout(autoplayTimeoutId);
+      window.speechSynthesis.cancel();
+    }
+
+    function toggleAutoplay() {
+      isAutoplay = !isAutoplay;
+      const btn = document.getElementById("autoplayBtn");
+      if (isAutoplay) {
+        btn.classList.add("autoplay-active");
+        btn.innerText = "Pause Auto";
+        startAutoplaySequence();
+      } else {
+        stopAutoplay();
+      }
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.code === "Space" && currentView === 'card') {
+        e.preventDefault();
+        manualFlipCard();
+      } else if (e.code === "ArrowRight") {
+        nextCard();
+      } else if (e.code === "ArrowLeft") {
+        prevCard();
+      }
+    });
+
+    filterCards();
+  </script>
+</body>
+</html>
